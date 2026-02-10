@@ -3,9 +3,8 @@ import { useEffect, useState } from "react";
 import Confetti from "react-confetti-boom";
 import bg from "./assets/images/bg.png";
 import {
-  audioClickFunc,
   audioLoopRoller,
-  audioWinnerFunc,
+  audioWinnerFunc
 } from "./common/audio-func";
 import { gsapOne } from "./common/gasp-number";
 import { FireworkCanvas } from "./components";
@@ -246,17 +245,6 @@ function App() {
   const startAnimation = (elems: NodeListOf<Element>, wordIndex: number, word: string, isGuaranteed: boolean) => {
     let isDone = false;
 
-    // Fallback timeout nếu animation không kết thúc
-    const safetyTimeout = setTimeout(() => {
-      if (!isDone) {
-        console.error('Animation timeout! Force reset state');
-        setIsSpin(false);
-        setIsWinner(true);
-        setWinnerName(word);
-        setCurrentSpinCount(prev => prev + 1);
-      }
-    }, (spinDuration + 5) * 1000); // timeout = spinDuration + 5 giây buffer
-
     // Sử dụng custom audio nếu có, không thì dùng mặc định
     const loopRoller = customSpinAudio
       ? new Audio(customSpinAudio)
@@ -264,8 +252,19 @@ function App() {
     loopRoller.loop = true;
     loopRoller.volume = 0.4;
 
-    const audioClick = audioClickFunc();
-    audioClick.play();
+    // Fallback timeout nếu animation không kết thúc
+    const safetyTimeout = setTimeout(() => {
+      if (!isDone) {
+        console.error('Animation timeout! Force reset state');
+        loopRoller.pause();
+        loopRoller.currentTime = 0;
+        setIsSpin(false);
+        setIsWinner(true);
+        setWinnerName(word);
+        setCurrentSpinCount(prev => prev + 1);
+      }
+    }, (spinDuration + 5) * 1000); // timeout = spinDuration + 5 giây buffer
+
     loopRoller.play();
 
     elems.forEach((elem, idx) => {
@@ -294,6 +293,7 @@ function App() {
           if (safetyTimeout) clearTimeout(safetyTimeout);
 
           loopRoller.pause();
+          loopRoller.currentTime = 0;
           audioWinner.play();
 
           console.log('Setting state: isSpin=false, isWinner=true');
@@ -309,11 +309,8 @@ function App() {
             console.log(`Tăng guaranteed_winner_index -> ${currentIndex + 1}`);
           }
         },
-        onAlmostFinished: (progress) => {
-          if (progress >= 0.8) {
-            loopRoller.volume = Math.max(0, 1 - (progress - 0.8) * 5);
-            loopRoller.playbackRate = 1 - progress * 0.5;
-          }
+        onAlmostFinished: () => {
+          // Không thay đổi audio - để phát liên tục cho đến khi kết thúc
         },
       });
     });
