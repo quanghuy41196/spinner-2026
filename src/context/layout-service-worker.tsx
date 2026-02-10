@@ -31,7 +31,7 @@ const LayoutServiceWorker: FC<PropsWithChildren> = ({ children }) => {
       autoConnect: true,
     });
 
-    socket.on("sync_data", async (result) => {
+    socket.on("sync_data", async (result: { type: string; data: any }) => {
       try {
         const { type, data } = result;
         const newType = type as keyof typeof objAction;
