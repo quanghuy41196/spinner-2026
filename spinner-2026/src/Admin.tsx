@@ -22,8 +22,6 @@ function Admin() {
     isLoading: isFirebaseLoading,
     words,
     guaranteedWinners,
-    currentSpinCount,
-    guaranteedWinnerIndex,
     syncGuaranteedWinners,
     syncSpinCount,
     syncGuaranteedWinnerIndex
