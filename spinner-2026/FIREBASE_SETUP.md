@@ -7,6 +7,7 @@
 - ✅ Thay đổi guaranteed winners → Sync real-time
 - ✅ Nhiều màn hình hiển thị cùng lúc, luôn đồng bộ
 
+xzc
 ---
 
 ## 🚀 Các bước setup
@@ -96,7 +97,7 @@ Sau khi test thành công, cập nhật Firebase Realtime Database Rules:
 \`\`\`
 
 **Giải thích:**
-- Cho phép mọi người đọc/ghi vào `spinner_data` 
+- Cho phép mọi người đọc/ghi vào `spinner_data`
 - ⚠️ Chỉ dùng cho internal app, không public
 - Nếu cần bảo mật cao hơn, xem phần **Security nâng cao** bên dưới
 
